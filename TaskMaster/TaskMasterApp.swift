@@ -1,17 +1,24 @@
-// TaskMasterApp.swift
-// Created by Shalom Aideyan (Student ID: 101222079) on 2025-03-20
-// Edited by Shalom Aideyan (Student ID: 101222079) on 2025-03-20 - Added app-wide dark mode support
+//
+//  TaskMasterApp.swift
+//  TaskMaster
+//
+//  Created by Shalom Aideyan (Student ID: 101222079) on 2025-03-20
+//
 
 import SwiftUI
 
 @main
 struct TaskMasterApp: App {
-    @AppStorage("isDarkModeEnabled") private var isDarkModeEnabled = false
-    
+   // @AppStorage("isDarkModeEnabled") private var isDarkModeEnabled = false
+
+    let persistenceController = PersistenceController.shared
+
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .preferredColorScheme(isDarkModeEnabled ? .dark : .light)
+                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+               // .preferredColorScheme(isDarkModeEnabled ? .dark : .light)
         }
     }
 }
+
