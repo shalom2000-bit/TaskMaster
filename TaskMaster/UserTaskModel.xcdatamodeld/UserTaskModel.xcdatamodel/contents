@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model name="UserTaskModel" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18119" systemVersion="22D68" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic" watchOSVersion="Automatic" tvOSVersion="Automatic">
+    <entity name="UserTask" representedClassName="UserTask" syncable="YES" codeGenerationType="class">
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="dateCreated" optional="YES" attributeType="Date" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="UserTask" positionX="160" positionY="120" width="128" height="60"/>
+    </elements>
+</model>

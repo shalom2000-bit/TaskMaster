@@ -29,9 +29,23 @@
 		A568EE242D8C996900E5ABEE /* TaskMasterUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TaskMasterUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		A58B18FF2DA215EE009828CC /* Exceptions for "TaskMaster" folder in "TaskMaster" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"UserTask+CoreDataClass.swift",
+				"UserTask+CoreDataProperties.swift",
+			);
+			target = A568EE092D8C996200E5ABEE /* TaskMaster */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		A568EE0C2D8C996200E5ABEE /* TaskMaster */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A58B18FF2DA215EE009828CC /* Exceptions for "TaskMaster" folder in "TaskMaster" target */,
+			);
 			path = TaskMaster;
 			sourceTree = "<group>";
 		};

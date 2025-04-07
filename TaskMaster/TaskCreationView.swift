@@ -1,45 +1,58 @@
-// TaskCreationView.swift
-// Created by Shalom Aideyan (Student ID: 101222079) on 2025-03-20
-// Edited by Vishaliny Sriragunathan (Student ID: 101429635) on 2025-03-20 - Added due date picker
-
 import SwiftUI
 
 struct TaskCreationView: View {
-    @Binding var tasks: [Task]
-    @State private var title: String = ""
-    @State private var dueDate: Date = Date()
-    @Environment(\.dismiss) var dismiss
-    
+    @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var title = ""
+    @State private var description = ""
+    @State private var dueDate = Date()
+    @State private var priority = "Medium"
+    @State private var category = "Work"
+    @State private var reminderEnabled = false
+
+    let priorities = ["Low", "Medium", "High"]
+    let categories = ["Work", "Personal", "Shopping"]
+
     var body: some View {
-        NavigationView {
-            Form {
-                Section(header: Text("Task Details")) {
-                    TextField("Task Title", text: $title)
-                    DatePicker("Due Date", selection: $dueDate, displayedComponents: [.date, .hourAndMinute])
+        Form {
+            Section(header: Text("Task Info")) {
+                TextField("Title", text: $title)
+                TextField("Description", text: $description)
+                DatePicker("Due Date", selection: $dueDate, displayedComponents: [.date, .hourAndMinute])
+                Picker("Priority", selection: $priority) {
+                    ForEach(priorities, id: \.self) { Text($0) }
+                }
+                Picker("Category", selection: $category) {
+                    ForEach(categories, id: \.self) { Text($0) }
+                }
+                Toggle("Remind Me", isOn: $reminderEnabled)
+            }
+        }
+        .navigationTitle("Add Task")
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button("Cancel") {
+                    dismiss()
                 }
             }
-            .navigationTitle("Add Task")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Save") {
-                        let newTask = Task(title: title.isEmpty ? "Untitled Task" : title, dueDate: dueDate, status: .toDo)
-                        tasks.append(newTask)
-                        dismiss()
-                    }
-                    .disabled(title.isEmpty)
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("Save") {
+                    let newTask = UserTask(context: viewContext)
+                    newTask.title = title.isEmpty ? "Untitled Task" : title
+                    newTask.dateCreated = Date()
+
+                    // The below lines are optional — they won't compile unless you add these fields to your Core Data model
+                    // newTask.descriptionText = description
+                    // newTask.dueDate = dueDate
+                    // newTask.priority = priority
+                    // newTask.category = category
+                    // newTask.reminderEnabled = reminderEnabled
+
+                    try? viewContext.save()
+                    dismiss()
                 }
             }
         }
-    }
-}
-
-struct TaskCreationView_Previews: PreviewProvider {
-    static var previews: some View {
-        TaskCreationView(tasks: .constant([]))
     }
 }

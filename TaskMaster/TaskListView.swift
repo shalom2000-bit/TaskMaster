@@ -1,59 +1,58 @@
-// TaskListView.swift
-// Created by Shalom Aideyan (Student ID: 101222079) on 2025-03-20
-// Edited by Vishaliny Sriragunathan (Student ID: 101429635) on 2025-03-20 - Added color logic for task status
-// Edited by Shalom Aideyan (Student ID: 101222079) on 2025-03-20 - Fixed tap-to-complete and added navigation to Task Details
+//
+//  TaskListView.swift
+//  TaskMaster
+//
+//  Created by Shalom Aideyan (Student ID: 101222079) on 2025-03-20
+//
 
 import SwiftUI
+import CoreData
 
 struct TaskListView: View {
-    @Binding var tasks: [Task]
-    
+    @Environment(\.managedObjectContext) private var viewContext
+
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \UserTask.dateCreated, ascending: true)],
+        animation: .default)
+    private var tasks: FetchedResults<UserTask>
+
     var body: some View {
         List {
             ForEach(tasks) { task in
                 NavigationLink(destination: TaskDetailsView(task: task)) {
                     HStack {
-                        Text(task.title)
-                            .foregroundColor(taskColor(task: task))
+                        Text(task.title ?? "Untitled")
+                            .foregroundColor(.primary)
                         Spacer()
-                        Text(task.status.rawValue)
+                        Text(task.dateCreated != nil ? formatDate(task.dateCreated!) : "")
                             .font(.caption)
                             .foregroundColor(.gray)
-                    }
-                }
-                .onTapGesture {
-                    // Toggle task status on tap
-                    if let index = tasks.firstIndex(where: { $0.id == task.id }) {
-                        tasks[index].status = tasks[index].status == .completed ? .toDo : .completed
                     }
                 }
             }
             .onDelete(perform: deleteTask)
         }
+        .navigationTitle("Your Tasks")
     }
-    
-    private func taskColor(task: Task) -> Color {
-        let now = Date()
-        if task.status == .completed {
-            return .black
-        } else if task.dueDate < now {
-            return .red
-        } else if task.dueDate < now.addingTimeInterval(86400) {
-            return .yellow
-        } else {
-            return .black
-        }
-    }
-    
+
     private func deleteTask(at offsets: IndexSet) {
-        tasks.remove(atOffsets: offsets)
+        for index in offsets {
+            viewContext.delete(tasks[index])
+        }
+        try? viewContext.save()
+    }
+
+    private func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .short
+        return formatter.string(from: date)
     }
 }
 
 struct TaskListView_Previews: PreviewProvider {
     static var previews: some View {
-        TaskListView(tasks: .constant([
-            Task(title: "Sample Task", dueDate: Date(), status: .toDo)
-        ]))
+        TaskListView()
+            .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
     }
 }
